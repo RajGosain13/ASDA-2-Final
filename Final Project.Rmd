@@ -5,26 +5,70 @@ date: "2026-05-02"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
 ```{r pressure, echo=FALSE}
 plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+```{r}
+setwd("/Users/mimijiang-yu/Documents/R/ASDA-2-Final") 
+library(readr)
+
+data <- read_csv(
+  "SeoulBikeData.csv",
+  locale = locale(encoding = "UTF-8"),
+  show_col_types = FALSE
+)
+
+head(data)
+
+```
+
+```{r}
+data <- data[, !names(data) %in% "Date"]
+data$Hour <- as.factor(data$Hour)
+data$Seasons <- as.factor(data$Seasons)
+data$Holiday <- as.factor(data$Holiday)
+data$`Functioning Day` <- as.factor(data$`Functioning Day`)
+
+head(data)
+```
+
+```{r}
+fwd_full_model <- lm(`Rented Bike Count` ~ ., data = data)
+
+fwd_null_model <- lm(`Rented Bike Count` ~ 1, data = data)
+
+step_forward <- step(
+  fwd_null_model,
+  scope = formula(fwd_full_model),
+  direction = "forward"
+)
+
+```
+
+
+```{r}
+bkwd_full_model <- lm(`Rented Bike Count` ~ ., data = data)
+
+step_backward <- step(
+  bkwd_full_model,
+  direction = "backward"
+)
+
+
+```
+
+
+```{r}
+stepwise_full_model <- lm(`Rented Bike Count` ~ ., data = data)
+
+step_both <- step(
+  stepwise_full_model,
+  direction = "both"
+)
+
+
+```
