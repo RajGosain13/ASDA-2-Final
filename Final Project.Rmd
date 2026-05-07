@@ -31,7 +31,8 @@ data <- data[, !names(data) %in% "Date"]
 data$Hour <- as.factor(data$Hour)
 data$Seasons <- as.factor(data$Seasons)
 data$Holiday <- as.factor(data$Holiday)
-data$`Functioning Day` <- as.factor(data$`Functioning Day`)
+#data$`Functioning Day` <- as.factor(data$`Functioning Day`)
+data$`Functioning Day` <- NULL
 
 head(data)
 ```
